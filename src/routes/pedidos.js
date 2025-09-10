@@ -1,11 +1,13 @@
 const express = require('express');
 const router = express.Router();
-const pedidosController = require('../controllers/pedidos');
+const controlador = require('../controllers/pedidos');
+const auth = require('../middleware/auth');
+const permissions = require('../middleware/permissions');
 
-router.get('/', pedidosController.getAll);
-router.get('/:id', pedidosController.getById);
-router.post('/', pedidosController.create);
-router.put('/:id', pedidosController.update);
-router.delete('/:id', pedidosController.remove);
+router.get('/', controlador.getAll);
+router.get('/:id', controlador.getById);
+router.post('/', auth, controlador.create);
+router.put('/:id', auth, controlador.update);
+router.delete('/:id', auth, permissions('admin'), controlador.remove);
 
 module.exports = router;

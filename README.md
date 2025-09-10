@@ -522,3 +522,170 @@ Cliente (1) ────< (N) Pedido
 └─────────────┘         │ total       │
                         │ creadoEn    │
                         └─────────────┘
+---
+
+# Práctica 3: Autenticación con JWT y roles
+
+## Paso 1: Instalación y dependencias
+
+Instala los siguientes paquetes:
+```
+npm install bcrypt jsonwebtoken dotenv
+```
+Asegúrate de tener en `.env`:
+```
+DATABASE_URL=postgresql://usuario:contraseña@localhost:5432/tu_db
+JWT_SECRET=tu_clave_secreta
+JWT_REFRESH_SECRET=tu_clave_refresh
+PORT=4000
+```
+
+## Paso 2: Migración y modelo de usuario
+
+Ejecuta el script de migración para la tabla Usuario:
+```sql
+CREATE TABLE "Usuario" (
+  id SERIAL PRIMARY KEY,
+  nombre VARCHAR(100) NOT NULL,
+  email VARCHAR(100) UNIQUE NOT NULL,
+  password VARCHAR(255) NOT NULL,
+  rol VARCHAR(20) NOT NULL DEFAULT 'user',
+  creadoEn TIMESTAMP DEFAULT NOW()
+);
+```
+
+## Paso 3: Registro y login (emisión de JWT)
+
+### Registro
+```
+POST http://localhost:4000/auth/register
+Body (JSON):
+{
+  "nombre": "Admin",
+  "email": "admin@correo.com",
+  "password": "123456",
+  "rol": "admin"
+}
+```
+Respuesta:
+```
+{
+  "id": 1,
+  "nombre": "Admin",
+  "email": "admin@correo.com",
+  "rol": "admin"
+}
+```
+
+### Login
+```
+POST http://localhost:4000/auth/login
+Body (JSON):
+{
+  "email": "admin@correo.com",
+  "password": "123456"
+}
+```
+Respuesta:
+```
+{
+  "accessToken": "...",
+  "refreshToken": "..."
+}
+```
+
+## Paso 4: Middleware de autenticación y roles
+
+Se implementa middleware para verificar el JWT y el rol del usuario. Ejemplo de uso en rutas:
+```js
+const { verificarJWT } = require('../middleware/auth');
+const { requireAdmin } = require('../middleware/permissions');
+
+router.post('/productos', verificarJWT, requireAdmin, controller.crear);
+```
+
+## Paso 5: Protección de rutas
+
+Las rutas de productos, pedidos y clientes requieren autenticación y rol admin para crear, actualizar o eliminar.
+
+## Paso 6: Endpoints de refresh y revocación de tokens
+
+### Refresh
+```
+POST http://localhost:4000/auth/refresh
+Body (JSON):
+{
+  "refreshToken": "..."
+}
+```
+Respuesta:
+```
+{
+  "accessToken": "..."
+}
+```
+
+### Revocar refresh token
+```
+POST http://localhost:4000/auth/revoke
+Body (JSON):
+{
+  "refreshToken": "..."
+}
+```
+Respuesta:
+```
+{
+  "mensaje": "Refresh token revocado"
+}
+```
+
+## Paso 7: Ejemplos de pruebas en Postman
+
+### 1. Registro de usuario
+![](./docs/postman_register.png)
+
+### 2. Login y obtención de tokens
+![](./docs/postman_login.png)
+
+### 3. Acceso a rutas protegidas
+Agrega el token de acceso en la cabecera:
+```
+Authorization: Bearer <accessToken>
+```
+Ejemplo POST a /productos:
+![](./docs/postman_productos_post.png)
+
+Body:
+```
+{
+  "nombre": "Lapiz",
+  "precio": 10,
+  "stock": 100
+}
+```
+
+### 4. Error de token inválido o expirado
+Si el token es incorrecto o expiró:
+![](./docs/postman_token_error.png)
+Respuesta:
+```
+{
+  "error": "Token inválido o expirado"
+}
+```
+
+### 5. Refresh y revocación
+![](./docs/postman_refresh.png)
+![](./docs/postman_revoke.png)
+
+## Paso 8: Notas y recomendaciones
+
+- Usa el accessToken para acceder a rutas protegidas.
+- El refreshToken solo sirve para obtener nuevos accessToken.
+- Si recibes 401 Unauthorized, genera un nuevo token con login o refresh.
+- Los tokens revocados no pueden usarse nuevamente.
+
+---
+
+
