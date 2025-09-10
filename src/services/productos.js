@@ -1,61 +1,49 @@
 
-// Simulación de base de datos en memoria
-let productos = [];
-let idCounter = 1;
-
-function getAll({ page = 1, limit = 10, sort }) {
-  let result = [...productos];
-  // Ordenamiento
-  if (sort) {
-    const [campo, orden] = sort.split(',');
-    result.sort((a, b) => {
-      if (orden === 'desc') return b[campo] - a[campo];
-      return a[campo] - b[campo];
-    });
-  }
-  // Paginación
-  const start = (page - 1) * limit;
-  const end = start + Number(limit);
-  return {
-    total: result.length,
-    page: Number(page),
-    limit: Number(limit),
-    productos: result.slice(start, end)
-  };
-}
-
-function getById(id) {
-  return productos.find(p => p.id === Number(id));
-}
-
-function create(datos) {
-  const nuevo = {
-    id: idCounter++,
-    ...datos,
-    creadoEn: new Date().toISOString()
-  };
-  productos.push(nuevo);
-  return nuevo;
-}
-
-function update(id, datos) {
-  const idx = productos.findIndex(p => p.id === Number(id));
-  if (idx === -1) return null;
-  productos[idx] = { ...productos[idx], ...datos };
-  return productos[idx];
-}
-
-function remove(id) {
-  const idx = productos.findIndex(p => p.id === Number(id));
-  if (idx === -1) return null;
-  productos.splice(idx, 1);
-  return true;
-}
+const pool = require('../db.js');
 
 module.exports = {
-  getAll,
-  getById,
-  create,
-  update,
-  remove
+  getAll: async ({ page = 1, limit = 10, sort }) => {
+    const offset = (page - 1) * limit;
+    let orderBy = 'id DESC';
+    if (sort) {
+      const [campo, orden] = sort.split(',');
+      orderBy = `${campo} ${orden.toUpperCase()}`;
+    }
+    const totalRes = await pool.query('SELECT COUNT(*) FROM "Producto"');
+    const total = parseInt(totalRes.rows[0].count);
+    const productosRes = await pool.query(
+      `SELECT * FROM "Producto" ORDER BY ${orderBy} OFFSET $1 LIMIT $2`,
+      [offset, limit]
+    );
+    return {
+      total,
+      page: Number(page),
+      limit: Number(limit),
+      productos: productosRes.rows
+    };
+  },
+  getById: async (id) => {
+    const res = await pool.query('SELECT * FROM "Producto" WHERE id = $1', [id]);
+    return res.rows[0];
+  },
+  create: async (datos) => {
+    const res = await pool.query(
+      'INSERT INTO "Producto" (nombre, descripcion, precio, creadoEn) VALUES ($1, $2, $3, NOW()) RETURNING *',
+      [datos.nombre, datos.descripcion, datos.precio]
+    );
+    return res.rows[0];
+  },
+  update: async (id, datos) => {
+    const res = await pool.query(
+      'UPDATE "Producto" SET nombre = $1, descripcion = $2, precio = $3 WHERE id = $4 RETURNING *',
+      [datos.nombre, datos.descripcion, datos.precio, id]
+    );
+    return res.rows[0];
+  },
+  remove: async (id) => {
+    const res = await pool.query('DELETE FROM "Producto" WHERE id = $1 RETURNING *', [id]);
+    return res.rows[0];
+  }
 };
+
+// ...existing code...
