@@ -1,0 +1,489 @@
+openapi: 3.0.0
+info:
+  title: API Practicas Backend
+  version: 1.0.0
+  description: Documentación automática de la API CRUD con JWT y roles.
+servers:
+  - url: http://localhost:3000
+    description: Servidor local
+tags:
+  - name: Productos
+    description: Endpoints para gestión de productos
+  - name: Clientes
+    description: Endpoints para gestión de clientes
+  - name: Pedidos
+    description: Endpoints para gestión de pedidos
+  - name: Auth
+    description: Endpoints de autenticación y registro
+paths:
+  /productos/{id}:
+    get:
+      tags: [Productos]
+      summary: Obtener producto por ID
+      description: Devuelve un producto específico por su ID.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID del producto
+      responses:
+        '200':
+          description: Producto encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Producto'
+        '404':
+          description: Producto no encontrado
+        '401':
+          description: No autorizado
+    put:
+      tags: [Productos]
+      summary: Actualizar producto por ID
+      description: Actualiza los datos de un producto existente.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID del producto
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductoInput'
+      responses:
+        '200':
+          description: Producto actualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Producto'
+        '400':
+          description: Datos inválidos
+        '404':
+          description: Producto no encontrado
+        '401':
+          description: No autorizado
+    delete:
+      tags: [Productos]
+      summary: Eliminar producto por ID
+      description: Elimina un producto existente por su ID.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID del producto
+      responses:
+        '204':
+          description: Producto eliminado
+        '404':
+          description: Producto no encontrado
+        '401':
+          description: No autorizado
+  /clientes/{id}:
+    get:
+      tags: [Clientes]
+      summary: Obtener cliente por ID
+      description: Devuelve un cliente específico por su ID.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID del cliente
+      responses:
+        '200':
+          description: Cliente encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cliente'
+        '404':
+          description: Cliente no encontrado
+        '401':
+          description: No autorizado
+    put:
+      tags: [Clientes]
+      summary: Actualizar cliente por ID
+      description: Actualiza los datos de un cliente existente.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID del cliente
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClienteInput'
+      responses:
+        '200':
+          description: Cliente actualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cliente'
+        '400':
+          description: Datos inválidos
+        '404':
+          description: Cliente no encontrado
+        '401':
+          description: No autorizado
+    delete:
+      tags: [Clientes]
+      summary: Eliminar cliente por ID
+      description: Elimina un cliente existente por su ID.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID del cliente
+      responses:
+        '204':
+          description: Cliente eliminado
+        '404':
+          description: Cliente no encontrado
+        '401':
+          description: No autorizado
+  /pedidos/{id}:
+    get:
+      tags: [Pedidos]
+      summary: Obtener pedido por ID
+      description: Devuelve un pedido específico por su ID.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID del pedido
+      responses:
+        '200':
+          description: Pedido encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pedido'
+        '404':
+          description: Pedido no encontrado
+        '401':
+          description: No autorizado
+    put:
+      tags: [Pedidos]
+      summary: Actualizar pedido por ID
+      description: Actualiza los datos de un pedido existente.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID del pedido
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PedidoInput'
+      responses:
+        '200':
+          description: Pedido actualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pedido'
+        '400':
+          description: Datos inválidos
+        '404':
+          description: Pedido no encontrado
+        '401':
+          description: No autorizado
+    delete:
+      tags: [Pedidos]
+      summary: Eliminar pedido por ID
+      description: Elimina un pedido existente por su ID.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID del pedido
+      responses:
+        '204':
+          description: Pedido eliminado
+        '404':
+          description: Pedido no encontrado
+        '401':
+          description: No autorizado
+  /clientes:
+    get:
+      tags: [Clientes]
+      summary: Obtener todos los clientes
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Lista de clientes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Cliente'
+        '401':
+          description: No autorizado
+    post:
+      tags: [Clientes]
+      summary: Crear un cliente
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClienteInput'
+      responses:
+        '201':
+          description: Cliente creado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cliente'
+        '400':
+          description: Datos inválidos
+        '401':
+          description: No autorizado
+  /pedidos:
+    get:
+      tags: [Pedidos]
+      summary: Obtener todos los pedidos
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Lista de pedidos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Pedido'
+        '401':
+          description: No autorizado
+    post:
+      tags: [Pedidos]
+      summary: Crear un pedido
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PedidoInput'
+      responses:
+        '201':
+          description: Pedido creado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pedido'
+        '400':
+          description: Datos inválidos
+        '401':
+          description: No autorizado
+  /productos:
+    get:
+      tags: [Productos]
+      summary: Obtener todos los productos
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Lista de productos
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  productos:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Producto'
+        '401':
+          description: No autorizado
+    post:
+      tags: [Productos]
+      summary: Crear un producto
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductoInput'
+      responses:
+        '201':
+          description: Producto creado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Producto'
+        '400':
+          description: Datos inválidos
+        '401':
+          description: No autorizado
+  /auth/login:
+    post:
+      tags: [Auth]
+      summary: Login de usuario
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: admin@correo.com
+                password:
+                  type: string
+                  example: 123456
+      responses:
+        '200':
+          description: Login exitoso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accessToken:
+                    type: string
+                  refreshToken:
+                    type: string
+        '401':
+          description: Credenciales inválidas
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Producto:
+      type: object
+      properties:
+        id:
+          type: integer
+        nombre:
+          type: string
+        precio:
+          type: number
+        stock:
+          type: integer
+      example:
+        id: 1
+        nombre: "Lapiz"
+        precio: 10.5
+        stock: 100
+    ProductoInput:
+      type: object
+      properties:
+        nombre:
+          type: string
+        precio:
+          type: number
+        stock:
+          type: integer
+    Cliente:
+      type: object
+      properties:
+        id:
+          type: integer
+        nombre:
+          type: string
+        email:
+          type: string
+        role:
+          type: string
+      example:
+        id: 1
+        nombre: "Juan Pérez"
+        email: "juan@correo.com"
+        role: "admin"
+    ClienteInput:
+      type: object
+      properties:
+        nombre:
+          type: string
+        email:
+          type: string
+        role:
+          type: string
+    Pedido:
+      type: object
+      properties:
+        id:
+          type: integer
+        clienteId:
+          type: integer
+        fecha:
+          type: string
+        estado:
+          type: string
+        total:
+          type: number
+      example:
+        id: 1
+        clienteId: 1
+        fecha: "2025-09-10"
+        estado: "pendiente"
+        total: 150.0
+    PedidoInput:
+      type: object
+      properties:
+        clienteId:
+          type: integer
+        fecha:
+          type: string
+        estado:
+          type: string
+        total:
+          type: number
+security:
+  - bearerAuth: []

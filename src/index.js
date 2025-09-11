@@ -1,3 +1,6 @@
+// Swagger
+const { swaggerUi, swaggerSpec } = require('./swagger');
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 require('dotenv').config();
 // Punto de entrada principal
 const express = require('express');

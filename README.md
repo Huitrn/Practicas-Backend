@@ -15,31 +15,23 @@ GET http://localhost:4000/productos
   "productos": [
     {
       "id": 1,
-      "nombre": "Lapiz",
+
       "precio": 10,
       "stock": 100,
       "creadoEn": "2025-09-03T00:00:00.000Z"
-    }
   ]
 }
-```
 
 ### 2. Crear producto (POST)
-```
 POST http://localhost:4000/productos
 Content-Type: application/json
-```
 **Body:**
 ```json
-{
   "nombre": "Lapiz",
   "precio": 10,
-  "stock": 100
 }
 ```
-**Respuesta:**
 ```json
-{
   "id": 1,
   "nombre": "Lapiz",
   "precio": 10,
@@ -768,5 +760,66 @@ beforeEach(async () => {
 
 ---
 ¿Dudas o mejoras? ¡Contáctame!
+#
+## Práctica 5
+
+## Descripción
+Documentación automática y navegable de la API REST CRUD usando Swagger/OpenAPI. Incluye seguridad JWT, ejemplos claros y validación del spec.
+
+## Tecnologías
+- Node.js
+
+- Express
+- Swagger UI Express
+
+- swagger-jsdoc
+- OpenAPI 3.0
+
+## Instalación y configuración
+1. Instala los paquetes necesarios:
+
+  ```bash
+  npm install swagger-jsdoc swagger-ui-express
+
+2. Asegúrate de tener el archivo `openapi.yaml` en la raíz del proyecto.
+3. Integra Swagger UI en tu servidor Express:
+  ```js
+  const swaggerUi = require('swagger-ui-express');
+  const YAML = require('yamljs');
+  const swaggerDocument = YAML.load('./openapi.yaml');
+  app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+  ```
+4. Inicia el servidor y accede a la documentación en [http://localhost:3000/docs](http://localhost:3000/docs).
+## Validación del spec
+- El archivo `openapi.yaml` fue validado en Swagger Editor y corregido para evitar errores y advertencias.
+- La documentación incluye todos los endpoints, parámetros, respuestas, ejemplos y seguridad JWT.
+## Ejemplos de endpoints documentados
+- Productos: `/productos`, `/productos/{id}`
+- Clientes: `/clientes`, `/clientes/{id}`
+- Pedidos: `/pedidos`, `/pedidos/{id}`
+- Autenticación: `/auth/login`
+- Todos los endpoints protegidos incluyen el esquema JWT Bearer.
+
+## Recomendaciones y buenas prácticas
+- Mantén el archivo `openapi.yaml` actualizado con cada cambio en la API.
+- Usa ejemplos claros y descripciones detalladas para facilitar el consumo de la API.
+- Valida el spec en Swagger Editor antes de cada entrega.
+- Incluye una captura de pantalla de la documentación en el README.
+
+## Cómo contribuir
+- Haz un fork y PR.
+- Actualiza la documentación si agregas o modificas endpoints.
+
+## Autor
+- Huitrn
+
+---
+
+---
 # Ejemplos de uso de endpoints
 
+
+
+![swagger editor](image-1.png)
+
+![Pruebas postman ](image-2.png)
