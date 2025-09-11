@@ -48,10 +48,14 @@ module.exports = {
   },
   remove: async (req, res) => {
     const id = req.params.id;
-    const eliminado = await productosService.remove(id);
-    if (!eliminado) {
-      return res.status(404).json({ error: 'Producto no encontrado' });
+    try {
+      const eliminado = await productosService.remove(id);
+      if (!eliminado) {
+        return res.status(404).json({ error: 'Producto no encontrado' });
+      }
+      res.status(204).send();
+    } catch (err) {
+      res.status(400).json({ error: err.message });
     }
-    res.json({ mensaje: 'Producto eliminado' });
   }
 };

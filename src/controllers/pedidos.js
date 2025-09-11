@@ -12,6 +12,10 @@ module.exports = {
   },
   create: async (req, res) => {
     try {
+      const { clienteId, fecha, estado, total } = req.body;
+      if (!clienteId || !fecha || !estado || total == null || clienteId === '' || fecha === '' || estado === '') {
+        return res.status(400).json({ error: 'Todos los campos son requeridos' });
+      }
       const nuevo = await pedidosService.create(req.body);
       res.status(201).json(nuevo);
     } catch (err) {
@@ -28,8 +32,12 @@ module.exports = {
     }
   },
   remove: async (req, res) => {
-    const eliminado = await pedidosService.remove(req.params.id);
-    if (!eliminado) return res.status(404).json({ error: 'Pedido no encontrado' });
-    res.json({ mensaje: 'Pedido eliminado' });
+    try {
+      const eliminado = await pedidosService.remove(req.params.id);
+      if (!eliminado) return res.status(404).json({ error: 'Pedido no encontrado' });
+      res.status(204).send();
+    } catch (err) {
+      res.status(400).json({ error: err.message });
+    }
   }
 };

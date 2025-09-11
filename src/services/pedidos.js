@@ -29,6 +29,13 @@ module.exports = {
     return res.rows[0];
   },
   create: async (data) => {
+    // Validar pedido duplicado (por clienteId, fecha y estado)
+    const existe = await pool.query('SELECT * FROM "Pedido" WHERE clienteId = $1 AND fecha = $2 AND estado = $3', [data.clienteId, data.fecha, data.estado]);
+    if (existe.rows.length > 0) {
+      const err = new Error('Pedido duplicado');
+      err.code = 409;
+      throw err;
+    }
     const res = await pool.query(
       'INSERT INTO "Pedido" (clienteId, fecha, estado, total, creadoEn) VALUES ($1, $2, $3, $4, NOW()) RETURNING *',
       [data.clienteId, data.fecha, data.estado, data.total]

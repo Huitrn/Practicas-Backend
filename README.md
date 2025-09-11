@@ -1,4 +1,140 @@
-# Ejemplos de uso de endpoints
+# Practicas Backend
+
+## Endpoints principales
+
+### 1. Listar productos (GET)
+```
+GET http://localhost:4000/productos
+```
+**Respuesta:**
+```json
+{
+  "total": 1,
+  "page": 1,
+  "limit": 10,
+  "productos": [
+    {
+      "id": 1,
+      "nombre": "Lapiz",
+      "precio": 10,
+      "stock": 100,
+      "creadoEn": "2025-09-03T00:00:00.000Z"
+    }
+  ]
+}
+```
+
+### 2. Crear producto (POST)
+```
+POST http://localhost:4000/productos
+Content-Type: application/json
+```
+**Body:**
+```json
+{
+  "nombre": "Lapiz",
+  "precio": 10,
+  "stock": 100
+}
+```
+**Respuesta:**
+```json
+{
+  "id": 1,
+  "nombre": "Lapiz",
+  "precio": 10,
+  "stock": 100,
+  "creadoEn": "2025-09-03T00:00:00.000Z"
+}
+```
+
+### 3. Obtener producto por ID (GET)
+```
+GET http://localhost:4000/productos/1
+```
+**Respuesta:**
+```json
+{
+  "id": 1,
+  "nombre": "Lapiz",
+  "precio": 10,
+  "stock": 100,
+  "creadoEn": "2025-09-03T00:00:00.000Z"
+}
+```
+
+### 4. Actualizar producto (PUT)
+```
+PUT http://localhost:4000/productos/1
+Content-Type: application/json
+```
+**Body:**
+```json
+{
+  "nombre": "Lapiz HB",
+  "precio": 12,
+  "stock": 90
+}
+```
+**Respuesta:**
+```json
+{
+  "id": 1,
+  "nombre": "Lapiz HB",
+  "precio": 12,
+  "stock": 90,
+  "creadoEn": "2025-09-03T00:00:00.000Z"
+}
+```
+
+### 5. Eliminar producto (DELETE)
+```
+DELETE http://localhost:4000/productos/1
+```
+**Respuesta:**
+```json
+{
+  "mensaje": "Producto eliminado"
+}
+```
+
+## Ejemplo de error de validación
+```
+POST http://localhost:4000/productos
+Content-Type: application/json
+```
+**Body:**
+```json
+{
+  "nombre": "",
+  "precio": -5,
+  "stock": -1
+}
+```
+**Respuesta:**
+```json
+{
+  "error": "El nombre es requerido"
+}
+```
+Desarrollado con Node.js, Express y Zod.
+# Diagrama ER
+
+Cliente (1) ────< (N) Pedido
+
+┌─────────────┐         ┌─────────────┐
+│  Cliente    │         │   Pedido    │
+│─────────────│         │─────────────│
+│ id (PK)     │◄─────┐  │ id (PK)     │
+│ nombre      │      │  │ clienteId   │
+│ email       │      └──│ fecha       │
+│ creadoEn    │         │ estado      │
+└─────────────┘         │ total       │
+                        │ creadoEn    │
+                        └─────────────┘
+---
+
+
 n# Práctica 2: API REST CRUD + PostgreSQL
 
 ---
@@ -387,141 +523,6 @@ En Postman, crea una petición DELETE a:
 http://localhost:4000/productos/1
 ```
 Haz clic en "Send" y verás el mensaje de confirmación.
-
----
-
-## Endpoints principales
-
-### 1. Listar productos (GET)
-```
-GET http://localhost:4000/productos
-```
-**Respuesta:**
-```json
-{
-  "total": 1,
-  "page": 1,
-  "limit": 10,
-  "productos": [
-    {
-      "id": 1,
-      "nombre": "Lapiz",
-      "precio": 10,
-      "stock": 100,
-      "creadoEn": "2025-09-03T00:00:00.000Z"
-    }
-  ]
-}
-```
-
-### 2. Crear producto (POST)
-```
-POST http://localhost:4000/productos
-Content-Type: application/json
-```
-**Body:**
-```json
-{
-  "nombre": "Lapiz",
-  "precio": 10,
-  "stock": 100
-}
-```
-**Respuesta:**
-```json
-{
-  "id": 1,
-  "nombre": "Lapiz",
-  "precio": 10,
-  "stock": 100,
-  "creadoEn": "2025-09-03T00:00:00.000Z"
-}
-```
-
-### 3. Obtener producto por ID (GET)
-```
-GET http://localhost:4000/productos/1
-```
-**Respuesta:**
-```json
-{
-  "id": 1,
-  "nombre": "Lapiz",
-  "precio": 10,
-  "stock": 100,
-  "creadoEn": "2025-09-03T00:00:00.000Z"
-}
-```
-
-### 4. Actualizar producto (PUT)
-```
-PUT http://localhost:4000/productos/1
-Content-Type: application/json
-```
-**Body:**
-```json
-{
-  "nombre": "Lapiz HB",
-  "precio": 12,
-  "stock": 90
-}
-```
-**Respuesta:**
-```json
-{
-  "id": 1,
-  "nombre": "Lapiz HB",
-  "precio": 12,
-  "stock": 90,
-  "creadoEn": "2025-09-03T00:00:00.000Z"
-}
-```
-
-### 5. Eliminar producto (DELETE)
-```
-DELETE http://localhost:4000/productos/1
-```
-**Respuesta:**
-```json
-{
-  "mensaje": "Producto eliminado"
-}
-```
-
-## Ejemplo de error de validación
-```
-POST http://localhost:4000/productos
-Content-Type: application/json
-```
-**Body:**
-```json
-{
-  "nombre": "",
-  "precio": -5,
-  "stock": -1
-}
-```
-**Respuesta:**
-```json
-{
-  "error": "El nombre es requerido"
-}
-```
-Desarrollado con Node.js, Express y Zod.
-# Diagrama ER
-
-Cliente (1) ────< (N) Pedido
-
-┌─────────────┐         ┌─────────────┐
-│  Cliente    │         │   Pedido    │
-│─────────────│         │─────────────│
-│ id (PK)     │◄─────┐  │ id (PK)     │
-│ nombre      │      │  │ clienteId   │
-│ email       │      └──│ fecha       │
-│ creadoEn    │         │ estado      │
-└─────────────┘         │ total       │
-                        │ creadoEn    │
-                        └─────────────┘
 ---
 
 # Práctica 3: Autenticación con JWT y roles
@@ -687,5 +688,85 @@ Respuesta:
 - Los tokens revocados no pueden usarse nuevamente.
 
 ---
+## Practica 4
+## Descripción
+API REST CRUD para gestión de productos, clientes y pedidos, con autenticación JWT, roles y pruebas automatizadas.
 
+## Tecnologías
+- Node.js
+- Express
+- PostgreSQL
+- JWT
+- Jest + Supertest
+
+## Instalación
+1. Clona el repositorio:
+  ```bash
+  git clone https://github.com/Huitrn/Practicas-Backend.git
+  cd Practicas-Backend
+  ```
+2. Instala dependencias:
+  ```bash
+  npm install
+  ```
+3. Configura tu archivo `.env`:
+  ```env
+  DATABASE_URL=postgres://usuario:password@localhost:5432/tu_db
+  JWT_SECRET=tu_jwt_secret
+  JWT_REFRESH_SECRET=tu_jwt_refresh_secret
+  PORT=3000
+  ```
+
+## Pruebas automatizadas
+- Las pruebas usan una base de datos de test real (PostgreSQL).
+- Antes de cada test se recomienda limpiar las tablas relevantes.
+- Ejecuta los tests y coverage:
+  ```bash
+  npm run test:coverage
+  ```
+- El umbral mínimo de cobertura recomendado es 80%.
+
+## Endpoints cubiertos
+- Autenticación: `/auth/register`, `/auth/login`, `/auth/refresh`
+- Productos: CRUD completo, validación de duplicados, errores de datos
+- Clientes: CRUD completo, roles, errores de datos y duplicados
+- Pedidos: CRUD completo, validación de duplicados, errores de datos
+
+## Estrategia de testing
+1. **Entorno de test separado:**
+  - Usa una base de datos de test y variables de entorno específicas.
+2. **Semilla y limpieza de datos:**
+  - Limpieza automática antes de cada test.
+3. **Cobertura:**
+  - Pruebas para escenarios felices y de error (401, 403, 404, 409, datos faltantes, duplicados, etc).
+  - Cobertura medida con Jest.
+4. **CI/CD:**
+  - Workflow de GitHub Actions en `.github/workflows/test.yml` para ejecutar tests y coverage en cada push/PR.
+
+## Ejemplo de archivo `.env.test`
+```env
+DATABASE_URL=postgres://testuser:testpass@localhost:5432/testdb
+JWT_SECRET=testsecret
+JWT_REFRESH_SECRET=testrefreshsecret
+PORT=3000
+```
+
+## Ejemplo de limpieza de BD en tests
+Puedes agregar en tus tests:
+```js
+beforeEach(async () => {
+  await pool.query('TRUNCATE "Producto", "Cliente", "Pedido" RESTART IDENTITY CASCADE');
+});
+```
+
+## Cómo contribuir
+- Haz un fork y PR.
+- Ejecuta los tests antes de enviar cambios.
+
+## Autor
+- Huitrn
+
+---
+¿Dudas o mejoras? ¡Contáctame!
+# Ejemplos de uso de endpoints
 

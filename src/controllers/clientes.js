@@ -12,6 +12,10 @@ module.exports = {
   },
   create: async (req, res) => {
     try {
+      const { nombre, email } = req.body;
+      if (!nombre || !email || nombre.trim() === '' || email.trim() === '') {
+        return res.status(400).json({ error: 'Nombre y email son requeridos' });
+      }
       const nuevo = await clientesService.create(req.body);
       res.status(201).json(nuevo);
     } catch (err) {
@@ -28,8 +32,12 @@ module.exports = {
     }
   },
   remove: async (req, res) => {
-    const eliminado = await clientesService.remove(req.params.id);
-    if (!eliminado) return res.status(404).json({ error: 'Cliente no encontrado' });
-    res.json({ mensaje: 'Cliente eliminado' });
+    try {
+      const eliminado = await clientesService.remove(req.params.id);
+      if (!eliminado) return res.status(404).json({ error: 'Cliente no encontrado' });
+      res.status(204).send();
+    } catch (err) {
+      res.status(400).json({ error: err.message });
+    }
   }
 };

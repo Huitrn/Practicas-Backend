@@ -27,6 +27,13 @@ module.exports = {
     return res.rows[0];
   },
   create: async (datos) => {
+    // Validar nombre duplicado
+    const existe = await pool.query('SELECT * FROM "Producto" WHERE nombre = $1', [datos.nombre]);
+    if (existe.rows.length > 0) {
+      const err = new Error('Nombre de producto duplicado');
+      err.code = 409;
+      throw err;
+    }
     const res = await pool.query(
       'INSERT INTO "Producto" (nombre, descripcion, precio, creadoEn) VALUES ($1, $2, $3, NOW()) RETURNING *',
       [datos.nombre, datos.descripcion, datos.precio]

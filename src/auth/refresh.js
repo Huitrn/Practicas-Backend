@@ -34,7 +34,7 @@ module.exports.revokedTokens = revokedTokens;
 module.exports.revoke = function (req, res) {
   const { refreshToken } = req.body;
   if (!refreshToken || !refreshTokens.includes(refreshToken)) {
-    return res.status(400).json({ error: 'Refresh token inválido' });
+    return res.status(401).json({ error: 'Refresh token inválido' });
   }
   revokedTokens.push(refreshToken);
   res.json({ mensaje: 'Refresh token revocado' });
